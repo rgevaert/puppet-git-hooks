@@ -10,6 +10,14 @@ else
     module_path=$1
 fi
 
+# if USE_BUNDLER is set to enabled then we use bundle exec rspec
+if [[ $USE_BUNDLER == "enabled" ]] ; then
+    rspec_binary="bundle exec rspec"
+else
+    rspec_binary="rspec"
+fi
+
+
 # Run rspec-puppet tests
 oldpwd=$(pwd)
 tmpchangedmodules=''
@@ -31,7 +39,7 @@ for module_dir in $changedmodules; do
         echo -e "$(tput setaf 6)Running rspec-puppet tests for module $module_path...$(tput sgr0)"
         cd $module_dir
         #this will run rspec for every test in the module
-        rspec > $error_msg
+        $rspec_binary > $error_msg
         RC=$?
         if [ $RC -ne 0 ]; then
             cat $error_msg | sed -e "s/^/$(tput setaf 1)/" -e "s/$/$(tput sgr0)/"

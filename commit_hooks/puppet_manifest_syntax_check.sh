@@ -7,6 +7,13 @@ manifest_path="$1"
 module_dir="$2"
 USE_PUPPET_FUTURE_PARSER="$3"
 
+# if USE_BUNDLER is set to enabled then we use bundle exec puppet
+if [[ $USE_BUNDLER == "enabled" ]] ; then
+    puppet_binary="bundle exec puppet"
+else
+    puppet_binary="puppet"
+fi
+
 syntax_errors=0
 error_msg=$(mktemp /tmp/error_msg_puppet-syntax.XXXXX)
 
@@ -22,9 +29,9 @@ fi
 # Check puppet manifest syntax
 echo -e "$(tput setaf 6)Checking puppet manifest syntax for $manifest_name...$(tput sgr0)"
 if [[ $USE_PUPPET_FUTURE_PARSER != "enabled" ]]; then
-    puppet parser validate --color=false "$1" > "$error_msg" 2>&1
+    $puppet_binary parser validate --color=false "$1" > "$error_msg" 2>&1
 else
-    puppet parser validate --parser future --color=false "$1" > "$error_msg" 2>&1
+    $puppet_binary parser validate --parser future --color=false "$1" > "$error_msg" 2>&1
 fi
 
 if [[ $? -ne 0 ]]; then

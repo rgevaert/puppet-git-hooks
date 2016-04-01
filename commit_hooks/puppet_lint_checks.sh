@@ -24,9 +24,16 @@ fi
 # De-lint puppet manifests
 echo -e "$(tput setaf 6)Checking puppet style guide compliance for ${manifest_name}...$(tput sgr0)"
 
+# if USE_BUNDLER is set to enabled then we use bundle exec puppet-lint
+if [[ $USE_BUNDLER == "enabled" ]] ; then
+    puppet_lint_binary="bundle exec puppet-lint"
+else
+    puppet_lint_binary="puppet-lint"
+fi
+
 # If a file named .puppet-lint.rc exists at the base of the repo then use it to
 # enable or disable checks.
-puppet_lint_cmd="puppet-lint --fail-on-warnings --with-filename --relative"
+puppet_lint_cmd="$puppet_lint_binary --fail-on-warnings --with-filename --relative"
 puppet_lint_rcfile="${3}.puppet-lint.rc"
 if [[ -f $puppet_lint_rcfile ]]; then
     echo -e "$(tput setaf 6)Applying custom config from ${puppet_lint_rcfile}$(tput sgr0)"

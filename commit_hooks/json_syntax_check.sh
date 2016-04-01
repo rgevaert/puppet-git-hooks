@@ -6,6 +6,14 @@
 syntax_errors=0
 error_msg=$(mktemp /tmp/error_msg_json-syntax.XXXXX)
 
+# if USE_BUNDLER is set to enabled then we use bundle exec metadata-json-lint
+if [[ $USE_BUNDLER == "enabled" ]] ; then
+    metadata_json_lint_binary="bundle exec metadata-json-lint"
+    metadata_json_lint_binary_check="bundle show metadata-json-lint"
+else
+    metadata_json_lint_binary_check="which metadata-json-lint"
+fi
+
 if [ $2 ]; then
     module_path=$(echo $1 | sed -e 's|'$2'||')
 else
@@ -22,9 +30,9 @@ if [ $? -ne 0 ]; then
 fi
 rm -f $error_msg
 
-if which metadata-json-lint > /dev/null 2>&1; then
+if $metadata_json_lint_binary_check > /dev/null 2>&1; then
     if [[ "$(basename $1)" == 'metadata.json' ]]; then
-        metadata-json-lint $1 2> $error_msg  >&2
+        $metadata_json_lint_binary $1 2> $error_msg  >&2
         if [ $? -ne 0 ]; then 
             cat $error_msg | sed -e "s/^/$(tput setaf 1)/" -e "s/$/$(tput sgr0)/"
             syntax_errors=`expr $syntax_errors + 1`
