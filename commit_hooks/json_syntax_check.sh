@@ -30,7 +30,7 @@ if [ $? -ne 0 ]; then
 fi
 rm -f $error_msg
 
-if $metadata_json_lint_binary_check > /dev/null 2>&1; then
+if `$metadata_json_lint_binary_check` > /dev/null 2>&1; then
     if [[ "$(basename $1)" == 'metadata.json' ]]; then
         $metadata_json_lint_binary $1 2> $error_msg  >&2
         if [ $? -ne 0 ]; then 
