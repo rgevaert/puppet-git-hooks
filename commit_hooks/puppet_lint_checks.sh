@@ -25,11 +25,12 @@ fi
 echo -e "$(tput setaf 6)Checking puppet style guide compliance for ${manifest_name}...$(tput sgr0)"
 
 # if USE_BUNDLER is set to enabled then we use bundle exec puppet-lint
-if [[ $USE_BUNDLER == "enabled" ]] ; then
-    puppet_lint_binary="bundle exec puppet-lint"
-else
-    puppet_lint_binary="puppet-lint"
-fi
+#if [[ $USE_BUNDLER == "enabled" ]] ; then
+#    puppet_lint_binary="bundle exec puppet-lint"
+#else
+#    puppet_lint_binary="puppet-lint"
+#fi
+puppet_lint_binary="bundle exec puppet-lint"
 
 # If a file named .puppet-lint.rc exists at the base of the repo then use it to
 # enable or disable checks.
